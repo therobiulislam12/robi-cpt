@@ -27,6 +27,12 @@ final class Robi_Custom_Post_Type {
     // declare instance
     public static $instance;
 
+    private function __construct() {
+
+        // after plugin loaded
+        add_action( 'plugin_loaded', array( $this, 'robi_cpt_init' ) );
+    }
+
     /**
      * create a getInstance method
      *
@@ -42,10 +48,22 @@ final class Robi_Custom_Post_Type {
 
         return self::$instance;
     }
+
+    /**
+     * After Plugin Loaded Call this class
+     *
+     * @return mixed
+     * @since 1.0.0
+     */
+    public function robi_cpt_init() {
+
+        new Robiul\CPT\Admin();
+
+    }
 }
 
 // get instance
-function robi_cpt(){
+function robi_cpt() {
     return Robi_Custom_Post_Type::getInstance();
 }
 
