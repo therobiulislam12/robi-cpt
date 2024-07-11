@@ -1,0 +1,20 @@
+{
+    "name": "therobiulislam12/wpd-team",
+    "description": "Robiul Custom Post Type plugin with some more option",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Robiul Islam",
+            "email": "therobiulislam12@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Robiul\\CPT\\": "includes/"
+        },
+        "files": ["includes/functions.php"]
+    }
+}
