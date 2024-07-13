@@ -147,15 +147,21 @@ class Post_Columns {
 
             $posts = get_posts( $post_args );
             $book_name = "";
+            $book_url = "";
 
             foreach ( $posts as $book_post ) {
                 if ( $book_id == $book_post->ID ) {
                     $book_name = $book_post->post_title;
+                    $book_url = get_permalink($book_post->ID);
                     break; 
                 }
             }
 
-            echo esc_html( $book_name );
+            if ( $book_name && $book_url ) {
+                echo '<a href="' . esc_url($book_url) . '">' . esc_html($book_name) . '</a>';
+            } else {
+                echo esc_html($book_name); 
+            }
         }
     }
 
