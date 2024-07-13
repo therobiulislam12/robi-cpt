@@ -13,6 +13,7 @@ class Post_Columns {
         // Chapters post type
         add_filter( 'manage_chapters_posts_columns', array( $this, 'robi_cpt_chapter_columns' ) );
         add_action( 'manage_chapters_posts_custom_column', array( $this, 'robi_custom_chapter_column' ), 10, 2 );
+        add_filter( 'manage_edit-chapters_sortable_columns', array( $this, 'robi_chapters_column_sortable' ), 10, 1 );
 
     }
 
@@ -71,6 +72,7 @@ class Post_Columns {
             if ( 'title' === $key ) {
                 $new_columns[$key] = $column;
                 $new_columns['book_name'] = "Book";
+                $new_columns['book_chapter'] = "Chapter";
                 continue;
             }
 
@@ -89,6 +91,8 @@ class Post_Columns {
      * @since 1.0.0
      */
     public function robi_custom_book_column( $column, $post_id ) {
+
+        // book thumbnail show
         if ( 'book_image' == $column ) {
             if ( has_post_thumbnail( $post_id ) ) {
                 echo get_the_post_thumbnail( $post_id, 'thumbnail' );
@@ -97,31 +101,42 @@ class Post_Columns {
             }
         }
 
+        // book author show
         if ( 'book_author' === $column ) {
 
-            global $post;
-            // get previous count
-            $author = get_post_meta( $post->ID, 'author', true );
+            $author = get_post_meta( $post_id, 'author', true );
 
             echo $author;
         }
 
+        // price show
         if ( 'book_price' === $column ) {
 
-            global $post;
-            // get previous count
-            $book_price = get_post_meta( $post->ID, 'book_price', true );
+            $book_price = get_post_meta( $post_id, 'book_price', true );
 
             echo $book_price;
         }
 
+        // chapters count
         if ( 'number_of_chapter' === $column ) {
 
-            global $post;
-            // get previous count
-            $chapters = get_post_meta( $post->ID, 'numbers_of_chapter', true );
+            // get the book from books post type
+            $post_args = [
+                'post_type' => 'chapters',
+            ];
 
-            echo $chapters;
+            $chapters = get_posts( $post_args );
+            $chapters_no = 0;
+
+            foreach ( $chapters as $chapter ) {
+                $book_name = get_post_meta( $chapter->ID, 'book_name', true );
+                if ( $book_name == $post_id ) {
+                    $chapters_no++;
+                }
+            }
+
+            echo $chapters_no;
+
         }
     }
 
@@ -142,7 +157,7 @@ class Post_Columns {
 
             // get the book from books post type
             $post_args = [
-                'post_type'   => 'books',
+                'post_type' => 'books',
             ];
 
             $posts = get_posts( $post_args );
@@ -152,16 +167,22 @@ class Post_Columns {
             foreach ( $posts as $book_post ) {
                 if ( $book_id == $book_post->ID ) {
                     $book_name = $book_post->post_title;
-                    $book_url = get_permalink($book_post->ID);
-                    break; 
+                    $book_url = get_permalink( $book_post->ID );
+                    break;
                 }
             }
 
             if ( $book_name && $book_url ) {
-                echo '<a href="' . esc_url($book_url) . '">' . esc_html($book_name) . '</a>';
+                echo '<a href="' . esc_url( $book_url ) . '">' . esc_html( $book_name ) . '</a>';
             } else {
-                echo esc_html($book_name); 
+                echo esc_html( $book_name );
             }
+        }
+
+        if( 'book_chapter' === $column ){
+            $chapter = get_post_meta( $post_id, 'chapter_number', true );
+            
+            echo $chapter;
         }
     }
 
@@ -178,6 +199,11 @@ class Post_Columns {
         $cols['book_price'] = 'book_price';
         $cols['number_of_chapter'] = 'number_of_chapter';
 
+        return $cols;
+    }
+
+    public function robi_chapters_column_sortable( $cols){
+        $cols['book_name'] = 'book_name';
         return $cols;
     }
 
