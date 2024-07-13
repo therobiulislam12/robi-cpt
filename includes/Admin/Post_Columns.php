@@ -104,9 +104,29 @@ class Post_Columns {
         // book author show
         if ( 'book_author' === $column ) {
 
-            $author = get_post_meta( $post_id, 'author', true );
+            $authors = wp_get_post_terms( $post_id, 'authors' );
 
-            echo $author;
+            if ( !empty( $authors ) && is_array( $authors ) ) {
+                $author_links = [];
+
+                foreach ( $authors as $author ) {
+                    if ( !empty( $author->name ) ) {
+                        // Construct the URL
+                        $url = add_query_arg( [
+                            'authors'   => $author->slug,
+                            'post_type' => 'books',
+                        ], admin_url( 'edit.php' ) );
+
+                        // Create the HTML link
+                        $author_links[] = '<a href="' . esc_url( $url ) . '">' . esc_html( $author->name ) . '</a>';
+                    }
+                }
+
+                if ( !empty( $author_links ) ) {
+                    echo implode( ', ', $author_links );
+                }
+            }
+
         }
 
         // price show
@@ -179,9 +199,9 @@ class Post_Columns {
             }
         }
 
-        if( 'book_chapter' === $column ){
+        if ( 'book_chapter' === $column ) {
             $chapter = get_post_meta( $post_id, 'chapter_number', true );
-            
+
             echo $chapter;
         }
     }
@@ -202,7 +222,7 @@ class Post_Columns {
         return $cols;
     }
 
-    public function robi_chapters_column_sortable( $cols){
+    public function robi_chapters_column_sortable( $cols ) {
         $cols['book_name'] = 'book_name';
         return $cols;
     }
