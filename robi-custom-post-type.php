@@ -31,6 +31,9 @@ final class Robi_Custom_Post_Type {
 
         // after plugin loaded
         add_action( 'plugin_loaded', array( $this, 'robi_cpt_init' ) );
+
+        // post type registration
+        add_action('init', array($this, 'robi_custom_post_type_register'));
     }
 
     /**
@@ -59,6 +62,19 @@ final class Robi_Custom_Post_Type {
 
         new Robiul\CPT\Admin();
 
+    }
+
+    /**
+     * 
+     * Register Custom post type
+     * 
+     * @return mixed
+     */
+    public function robi_custom_post_type_register(){
+        $books = new Robiul\CPT\Admin\Post_Types();
+        $books->robi_books_post_type_register();
+        $books->robi_chapters_post_type_register();
+        $books->robi_author_taxonomy_register_on_books();
     }
 }
 
