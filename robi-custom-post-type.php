@@ -10,6 +10,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Domain Path:       /languages
  * Text Domain:      robi-cpt
+ * Requires Plugins: advanced-custom-fields
  */
 
 // check if not "ABSPATH" declare
@@ -34,6 +35,9 @@ final class Robi_Custom_Post_Type {
 
         // post type registration
         add_action('init', array($this, 'robi_custom_post_type_register'));
+
+        // activation hook
+        register_activation_hook(__FILE__, array($this, 'active'));
     }
 
     /**
@@ -75,6 +79,16 @@ final class Robi_Custom_Post_Type {
         $books->robi_books_post_type_register();
         $books->robi_chapters_post_type_register();
         $books->robi_author_taxonomy_register_on_books();
+    }
+
+    /**
+     * 
+     * After activation 
+     * 
+     * @return void
+     */
+    public function active(){
+        new Robiul\CPT\Installer();
     }
 }
 
