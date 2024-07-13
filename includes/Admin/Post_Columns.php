@@ -137,27 +137,25 @@ class Post_Columns {
 
         if ( 'book_name' === $column ) {
 
-            global $post;
-
             // get book id
-            $book_id = get_post_meta( $post->ID, 'book_name', true );
+            $book_id = get_post_meta( $post_id, 'book_name', true );
 
             // get the book from books post type
             $post_args = [
-                'post_type' => 'books',
+                'post_type'   => 'books',
             ];
 
-            $posts = get_posts($post_args);
+            $posts = get_posts( $post_args );
             $book_name = "";
 
-            foreach($posts as $post){
-                if($book_id == $post->ID){
-                    $book_name = $post->post_title;
-                    break;
+            foreach ( $posts as $book_post ) {
+                if ( $book_id == $book_post->ID ) {
+                    $book_name = $book_post->post_title;
+                    break; 
                 }
             }
 
-            echo $book_name;
+            echo esc_html( $book_name );
         }
     }
 
