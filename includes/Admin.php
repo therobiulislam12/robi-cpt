@@ -6,6 +6,7 @@ class Admin{
     public function __construct(){
 
         new Admin\Post_Columns();
+        new Admin\Menu();
 
     }
 }
