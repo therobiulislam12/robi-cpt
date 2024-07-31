@@ -34,10 +34,10 @@ final class Robi_Custom_Post_Type {
         add_action( 'plugin_loaded', array( $this, 'robi_cpt_init' ) );
 
         // post type registration
-        add_action('init', array($this, 'robi_custom_post_type_register'));
+        add_action( 'init', array( $this, 'robi_custom_post_type_register' ) );
 
         // activation hook
-        register_activation_hook(__FILE__, array($this, 'active'));
+        register_activation_hook( __FILE__, array( $this, 'active' ) );
     }
 
     /**
@@ -64,17 +64,21 @@ final class Robi_Custom_Post_Type {
      */
     public function robi_cpt_init() {
 
-        new Robiul\CPT\Admin();
+        if ( is_admin() ) {
+            new Robiul\CPT\Admin();
+        } else {
+            new Robiul\CPT\Frontend();
+        }
 
     }
 
     /**
-     * 
+     *
      * Register Custom post type
-     * 
+     *
      * @return mixed
      */
-    public function robi_custom_post_type_register(){
+    public function robi_custom_post_type_register() {
         $books = new Robiul\CPT\Admin\Post_Types();
         $books->robi_books_post_type_register();
         $books->robi_chapters_post_type_register();
@@ -82,12 +86,12 @@ final class Robi_Custom_Post_Type {
     }
 
     /**
-     * 
-     * After activation 
-     * 
+     *
+     * After activation
+     *
      * @return void
      */
-    public function active(){
+    public function active() {
         new Robiul\CPT\Installer();
     }
 }
